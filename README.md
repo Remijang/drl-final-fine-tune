@@ -2,26 +2,29 @@
 
 ## next instruction
 
+compile llama.cpp
+
     git clone https://github.com/ggerganov/llama.cpp
     cd llama.cpp
     make
 
+in llama.cpp
+
     mkdir gguf
 
-    python3 convert_hf_to_gguf.py --outtype f16 --outfile ./gguf/llama3-smac.gguf ../fine_tuned_smac_llama3_adapter/merged_model
+    python3 convert_hf_to_gguf.py --outtype f16 --outfile ./gguf/llama3-smac.gguf [path to merged_model]
 
-    cd gguf
+in `gguf`, create a new file `Modelfile`:
+```bash=
+FROM llama3
 
-    vim Modelfile
+# Optional: custom metadata or tags
+PARAMETER num_ctx 4096
 
-    ```
-        FROM llama3
+# Load your custom model
+MODEL ./llama3-smac.gguf
+```
 
-        # Optional: custom metadata or tags
-        PARAMETER num_ctx 4096
-
-        # Load your custom model
-        MODEL ./llama3-smac.gguf
-    ```
+last, create the model in ollama
 
     ollama create smac-llama3 -f Modelfile
