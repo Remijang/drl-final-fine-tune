@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments,
 from peft import LoraConfig, prepare_model_for_kbit_training, AutoPeftModelForCausalLM
 from datasets import load_dataset
 from trl import SFTTrainer
-import os
+import os, types, sys
 import torch.utils.checkpoint
 
 torch.utils.checkpoint.use_reentrant = False
@@ -97,7 +97,16 @@ training_args = TrainingArguments(
 )
 
 # https://huggingface.co/docs/transformers/en/main_classes/data_collator#transformers.DataCollatorForLanguageModeling
-data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
+class DebugDataCollator(DataCollatorForLanguageModeling):
+    def __call__(self, features):
+        batch = super().__call__(features)
+        print(f"\n[DataCollator] Tensor shapes in batch:")
+        for k, v in batch.items():
+            if isinstance(v, torch.Tensor):
+                print(f"  {k}: {v.shape}")
+        return batch
+
+data_collator = DebugDataCollator(tokenizer=tokenizer, mlm=False)
 
 # https://huggingface.co/docs/trl/en/sft_trainer#trl.SFTTrainer
 trainer = SFTTrainer(
@@ -108,7 +117,26 @@ trainer = SFTTrainer(
     data_collator=data_collator,
 )
 
-trainer.train()
+def debug_compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+    print(f"\n[Trainer] compute_loss called with tensors:")
+    for key, val in inputs.items():
+        if isinstance(val, torch.Tensor):
+            print(f"  {key}: shape={val.shape}")
+    try:
+        return super(SFTTrainer, self).compute_loss(model, inputs, return_outputs, num_items_in_batch)
+    except Exception as e:
+        print(f"\n[Error] Exception during compute_loss: {e}")
+        print("Exiting due to shape mismatch.")
+        sys.exit(1)
+
+trainer.compute_loss = types.MethodType(debug_compute_loss, trainer)
+
+print("Starting training...")
+try:
+    trainer.train()
+except Exception as e:
+    print(f"\n[Global Error Handler] Training failed: {e}")
+    sys.exit(1)
 
 output_adapter_path = os.path.join(OUTPUT_DIR, "final_adapter")
 trainer.save_model(output_adapter_path)
