@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from peft import LoraConfig, prepare_model_for_kbit_training, AutoPeftModelForCausalLM
 from datasets import load_dataset
 from trl import PPOTrainer, PPOConfig
-import os, sys, re
+import os, re
 import numpy as np
 import random
 from smac.env import StarCraft2Env

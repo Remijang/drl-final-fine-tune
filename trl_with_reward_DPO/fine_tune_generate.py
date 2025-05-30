@@ -1,8 +1,13 @@
 import numpy as np
 import json
-import os
+import os, sys
 import random
 from smac.env import StarCraft2Env
+
+current_script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_script_dir)
+sys.path.insert(0, parent_dir)
+
 from translate import get_state_NL
 from test_llm import get_action_description
 

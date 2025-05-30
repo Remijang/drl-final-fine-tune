@@ -3,9 +3,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 from peft import LoraConfig, prepare_model_for_kbit_training, AutoPeftModelForCausalLM
 from datasets import load_dataset
 from trl import DPOTrainer, DPOConfig
-import os, sys, re
-import numpy as np
-import random
+import os
 
 torch.utils.checkpoint.use_reentrant = False
 
