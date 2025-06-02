@@ -16,7 +16,7 @@ from utils import get_action_id, system_prompt
 torch, nn = try_import_torch()
 
 class LLMMaskedActionsModel(TorchModelV2, nn.Module):
-    BASE_MODEL_ID = "meta-llama/Llama-3.2-3B-Instruct" 
+    BASE_MODEL_ID = "google/gemma-3-1b-it" 
     MAX_SEQ_LENGTH = 512
 
     def __init__(self, obs_space, action_space, num_outputs, model_config, name):

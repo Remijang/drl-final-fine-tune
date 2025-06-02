@@ -128,5 +128,5 @@ if __name__ == "__main__":
         map_name="3m",
         episodes=50,
         max_steps_per_episode=50,
-        output_file="smac_finetuning_data_llm_driven.jsonl"
+        output_file="smac_finetuning_data.jsonl"
     )

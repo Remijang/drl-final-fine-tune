@@ -43,7 +43,7 @@ def get_action_id(action_desc):
 
 
 class LLMAgent:
-    def __init__(self, model_name="llama3.2", verbose=False):
+    def __init__(self, model_name="smac-gemma3-1b", verbose=False):
         self.model_name = model_name
         self.verbose = verbose
         openai.api_base = 'http://127.0.0.1:11434/v1' # test with ollama

@@ -8,9 +8,9 @@ import torch.utils.checkpoint
 
 torch.utils.checkpoint.use_reentrant = False
 
-BASE_MODEL_ID = "meta-llama/Llama-3.2-3B-Instruct"
+BASE_MODEL_ID = "google/gemma-3-1b-it"
 DATASET_PATH = "smac_finetuning_data.jsonl"
-OUTPUT_DIR = "./fine_tuned_smac_llama3_adapter"
+OUTPUT_DIR = "./fine_tuned_smac_adapter"
 
 # https://huggingface.co/docs/transformers/en/model_doc/auto#transformers.AutoTokenizer
 tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL_ID, trust_remote_code=True)
